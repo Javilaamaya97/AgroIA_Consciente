@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Subir imagen - AgroIA</title>
+</head>
+<body>
+  <h2>Subir imagen para diagnóstico</h2>
+
+  <form id="uploadForm">
+    <label for="id_usuario">Usuario ID:</label>
+    <input type="number" name="id_usuario" required><br><br>
+
+    <label for="id_lote">Lote ID:</label>
+    <input type="number" name="id_lote" required><br><br>
+
+    <label for="file">Seleccionar imagen:</label>
+    <input type="file" name="file" accept="image/*" required><br><br>
+
+    <button type="submit">Enviar imagen</button>
+  </form>
+
+  <h3>Resultado:</h3>
+  <pre id="output"></pre>
+
+  <script>
+    document.getElementById("uploadForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(event.target);
+
+      try {
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          document.getElementById("output").innerText = "❌ Error: " + error.detail;
+          return;
+        }
+
+        const result = await response.json();
+
+        // ✅ Mostrar los valores correctos
+        document.getElementById("output").innerText = `
+Diagnóstico: ${result.diagnostico}
+Probabilidad: ${result.probabilidad}%
+Recomendación: ${result.recomendacion}
+Imagen guardada: ${result.archivo}
+        `;
+      } catch (err) {
+        document.getElementById("output").innerText = "❌ Error al conectar con el servidor: " + err;
+      }
+    });
+  </script>
+</body>
+</html>

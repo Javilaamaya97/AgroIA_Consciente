@@ -13,7 +13,9 @@ app = FastAPI(title="AgroIA Backend Ajustado a BD")
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # en producción restringir
+    allow_origins=["http://localhost:3000", #desarrollo local
+                  "https://agro-ia-frontend-osy7.vercel.app",
+                  ],  # en producción restringir
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
